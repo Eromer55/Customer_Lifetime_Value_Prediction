@@ -1,14 +1,6 @@
 ##############################################################
-# BG-NBD ve Gamma-Gamma ile CLTV Prediction
+# CLTV Prediction
 ##############################################################
-
-
-###############################################################
-# GÖREV 1: Veriyi Hazırlama
-###############################################################
-
-# Adım1: flo_data_20K.csv verisini okuyunuz.
-
 
 import pandas as pd
 import datetime as dt
@@ -30,8 +22,13 @@ pd.set_option('display.max_rows', None)
 pd.set_option('display.float_format', lambda x: '%.2f' % x)
 pd.options.mode.chained_assignment = None
 
-# 1. OmniChannel.csv verisini okuyunuz.Dataframe’in kopyasını oluşturunuz.
-df_ = pd.read_csv("WEEK_3/FLO_RFM_Analizi/FLO_RFM_Analizi/flo_data_20k.csv")
+###############################################################
+# GÖREV 1: Veriyi Hazırlama
+###############################################################
+
+# Adım1: flo_data_20K.csv verisini okuyunuz.
+
+df_ = pd.read_csv("datasets/flo_data_20k.csv")
 df = df_.copy()
 df.head()
 
