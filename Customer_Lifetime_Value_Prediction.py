@@ -102,31 +102,49 @@ df = df[df['order_num_total'] > 1]
 df['last_order_date'].max() # 2021-05-30
 analysis_date = dt.datetime(2021, 6, 1)
 
-#Adım2: customer_id, recency_cltv_weekly, T_weekly, frequency ve monetary_cltv_avg değerlerinin yer aldığı yeni bir cltv dataframe'i oluşturunuz.
-#Monetary değeri satın alma başına ortalama değer olarak, recency ve tenure değerleri ise haftalık cinsten ifade edilecek.
+# recency : Son satım alma üzerinden geçen zaman. Haftalık (kullanıcı özelinde)
+# T : Müşterinin yaşı. Haftalık. (analiz tarihinden ne kadar süre önce ilk satın alma yapılmış)
+# frequency : tekrar eden toplam satın alma sayısı (frequency>1)
+# monetary_value : satın alma başına ortalama kazanç
 
-cltv_df = pd.DataFrame()
-cltv_df['customer_id'] = df['master_id']
-cltv_df['recency_cltv_week'] = ((df['last_order_date'] - df['first_order_date']).astype('timedelta64[D]')) / 7
-cltv_df['T_weekly'] = ((analysis_date - df['first_order_date']).astype('timedelta64[D]')) / 7
-cltv_df['frequency'] = df['order_num_total']
-cltv_df['monetary_cltv_avg'] = df['customer_value_total'] / df['order_num_total']
+cltv_df = pd.DataFrame({"customer_id": df["master_id"],
+             "recency_cltv_weekly": ((df["last_order_date"] - df["first_order_date"]).dt.days)/7,
+             "T_weekly": ((analysis_date - df["first_order_date"]).dt.days)/7,
+             "frequency": df["New_order_num_total"],
+             "monetary_cltv_avg": df["New_customer_value_total"] / df["New_order_num_total"]})
 cltv_df.head()
+
+# #Alternatif Yöntem: Boş dataframe create ederek, değişkenleri oluşturmak:
+# cltv_df = pd.DataFrame()
+# cltv_df["customer_id"] = df["master_id"]
+# cltv_df["recency_cltv_weekly"] = ((df["last_order_date"]- df["first_order_date"]).astype('timedelta64[D]')) / 7
+# cltv_df["T_weekly"] = ((analysis_date - df["first_order_date"]).astype('timedelta64[D]'))/7
+# cltv_df["frequency"] = df["New_order_num_total"]
+# cltv_df["monetary_cltv_avg"] = df["New_customer_value_total"] / df["New_order_num_total"]
+
 
 ##############################################################################################
 # Görev 3: BG/NBD, Gamma-Gamma Modellerinin Kurulması ve CLTV’nin Hesaplanması
 ###############################################################################################
 
-# Adım1: BG/NBD modelini fit ediniz.
-# penalizer_coef : Katsayılara uygulanan ceza katsayısı
+# Adım1: BG/NBD modelini fit ediniz. penalizer_coef : Katsayılara uygulanan ceza katsayısı anlamına gelmektedir.
 bgf = BetaGeoFitter(penalizer_coef=0.001)
-
 bgf.fit(cltv_df['frequency'],
         cltv_df['recency_cltv_week'],
         cltv_df['T_weekly'])
 
-#3 ay içerisinde müşterilerden beklenen satın almaları tahmin ediniz ve exp_sales_3_month olarak cltv dataframe'ine ekleyiniz.
+# 1 hafta içerisinde en çok satın alma beklediğimiz 10 müşteri kimdir?
+bgf.conditional_expected_number_of_purchases_up_to_time(1,
+                                                        cltv_df['frequency'],
+                                                        cltv_df['recency_cltv_week'],
+                                                        cltv_df['T_weekly']).sort_values(ascending=False).head(10)
+# BG-NBD modeli için üstteki kod ile aşağıdaki kod aynıdır. Ama Gamma-Gamma modeli için geçerli değildir.
+bgf.predict(1,
+            cltv_df['frequency'],
+            cltv_df['recency'],
+            cltv_df['T']).sort_values(ascending=False).head(10)
 
+#3 ay içerisinde müşterilerden beklenen satın almaları tahmin ediniz ve exp_sales_3_month olarak cltv dataframe'ine ekleyiniz.
 cltv_df['exp_sales_3_month'] = bgf.predict(4*3,
                                            cltv_df['frequency'],
                                            cltv_df['recency_cltv_week'],
@@ -144,8 +162,14 @@ cltv_df.head()
 cltv_df.sort_values(by='exp_sales_3_month', ascending=False)[:10]
 cltv_df.sort_values(by='exp_sales_6_month', ascending=False)[:10]
 
-#Adım2: Gamma-Gamma modelini fit ediniz. Müşterilerin ortalama bırakacakları değeri tahminleyip exp_average_value
-# olarak cltv dataframe'ine ekleyiniz.
+##############################################################################################
+# Tahmin Sonuçlarının Değerlendirilmesi
+###############################################################################################
+
+plot_period_transactions(bgf)
+plt.show()
+
+#Adım2: Gamma-Gamma modelini fit ediniz. Müşterilerin ortalama bırakacakları değeri tahminleyip exp_average_value olarak cltv dataframe'ine ekleyiniz.
 
 ggf = GammaGammaFitter(penalizer_coef=0.01)
 ggf.fit(cltv_df['frequency'], cltv_df['monetary_cltv_avg'])
@@ -174,8 +198,6 @@ cltv_df.sort_values(by="cltv", ascending=False)[:20]
 #Adım1: 6 aylık CLTV'ye göre tüm müşterilerinizi 4 gruba (segmente) ayırınız ve grup isimlerini veri setine ekleyiniz.
 cltv_df['cltv_segment'] = pd.qcut(cltv_df['cltv'], 4, labels=['D', 'C', 'B', 'A'])
 cltv_df.head()
-
-#Adım2: 4 grup içerisinden seçeceğiniz 2 grup için yönetime kısa kısa 6 aylık aksiyon önerilerinde bulununuz.
 
 # Bonus: Fonksiyonlaştıralım
 
