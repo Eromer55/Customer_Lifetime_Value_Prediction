@@ -126,8 +126,10 @@ cltv_df.head()
 ##############################################################################################
 # Görev 3: BG/NBD, Gamma-Gamma Modellerinin Kurulması ve CLTV’nin Hesaplanması
 ###############################################################################################
+# BG/NBD satın alma sayısını modeller. Gamma-Gamma modeli ise average profiti bulur.
 
 # Adım1: BG/NBD modelini fit ediniz. penalizer_coef : Katsayılara uygulanan ceza katsayısı anlamına gelmektedir.
+# beta ve gama dağılımı parametrelerini en çok olabilirlik yöntemiyle bulmuş oluyoruz.
 bgf = BetaGeoFitter(penalizer_coef=0.001)
 bgf.fit(cltv_df['frequency'],
         cltv_df['recency_cltv_week'],
