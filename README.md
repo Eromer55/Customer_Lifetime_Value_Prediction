@@ -1,5 +1,5 @@
-# CUSTOMER LIFETIME VALUE PREDICTION
-Bu çalışmada BG-NBD ve Gamma-Gamma modellerini kullanacak müşteri yaşam boyu değeri tahminlemesi yapacağız.
+# Müşteri Yaşam Boyu Değeri Hesaplama ve Geleceğe Dönük Tahminleme (CLTV)
+Bu çalışmada ilk olarak Müşteri yaşam boyu değeri hesaplanmış, sonrasonda BG/NBD ve Gamma-Gamma modelleri kurularak geleceğe dönük müşteri yaşam boyu değeri tahminlemesi yapılmıştır..
 
 ![CLTV](https://user-images.githubusercontent.com/85547094/172051863-23b69306-a4ed-4939-b50b-223727aa0172.jpg)
 
