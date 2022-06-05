@@ -1,14 +1,14 @@
-# FLO CUSTOMER LIFETIME VALUE PREDICTION
-BG-NBD ve Gamma-Gamma ile CLTV Prediction
+# CUSTOMER LIFETIME VALUE PREDICTION
+Bu çalışmada BG-NBD ve Gamma-Gamma modellerini kullanacak müşteri yaşam boyu değeri tahminlemesi yapacağız.
 
 
-İş Problemi (Business Problem)
+# İş Problemi (Business Problem)
 FLO satış ve pazarlama faaliyetleri için roadmap belirlemek istemektedir. Şirketin orta uzun vadeli plan yapabilmesi için var olan müşterilerin gelecekte şirkete sağlayacakları potansiyel değerin tahmin edilmesi gerekmektedir.
 
-Veri Seti Hikayesi
+# Veri Seti Hikayesi
 Veri seti son alışverişlerini 2020 - 2021 yıllarında OmniChannel(hem online hem offline alışveriş yapan) olarak yapan müşterilerin geçmiş alışveriş davranışlarından elde edilen bilgilerden oluşmaktadır
 
-Değişkenler
+# Değişkenler
 master_id: Eşsiz müşteri numarası
 order_channel : Alışveriş yapılan platforma ait hangi kanalın kullanıldığı (Android, ios, Desktop, Mobile, Offline)
 last_order_channel : En son alışverişin yapıldığı kanal
