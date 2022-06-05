@@ -1,6 +1,8 @@
 # CUSTOMER LIFETIME VALUE PREDICTION
 Bu çalışmada BG-NBD ve Gamma-Gamma modellerini kullanacak müşteri yaşam boyu değeri tahminlemesi yapacağız.
 
+![CLTV](https://user-images.githubusercontent.com/85547094/172051863-23b69306-a4ed-4939-b50b-223727aa0172.jpg)
+
 
 # İş Problemi (Business Problem)
 FLO satış ve pazarlama faaliyetleri için roadmap belirlemek istemektedir. Şirketin orta uzun vadeli plan yapabilmesi için var olan müşterilerin gelecekte şirkete sağlayacakları potansiyel değerin tahmin edilmesi gerekmektedir.
